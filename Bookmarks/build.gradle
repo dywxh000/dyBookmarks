@@ -1,0 +1,92 @@
+apply from: '../constants.gradle'
+apply plugin: 'com.android.application'
+
+android {
+  // keep the original Java package for R/BuildConfig; only the installed applicationId changes
+  namespace 'com.github.warren_bank.bookmarks'
+
+  compileSdkVersion project.ext.compileSdkVersion
+  buildToolsVersion project.ext.buildToolsVersion
+
+  compileOptions {
+    sourceCompatibility project.ext.javaVersion
+    targetCompatibility project.ext.javaVersion
+  }
+
+  defaultConfig {
+    minSdkVersion project.ext.minSdkVersion
+    targetSdkVersion project.ext.targetSdkVersion
+
+    applicationId project.ext.applicationId
+    versionName   project.ext.releaseVersion
+    versionCode   project.ext.releaseVersionCode
+
+    archivesBaseName += "-$versionName"
+  }
+
+  flavorDimensions "runtimePermissions", "languageResources"
+
+  productFlavors {
+    withAllLanguageTranslations {
+      dimension "languageResources"
+    }
+    english {
+      dimension "languageResources"
+    }
+    noRuntimePermissions {
+      dimension "runtimePermissions"
+      buildConfigField "boolean", "ALLOW_RUNTIME_PERMISSIONS_USER",   "false"
+      buildConfigField "boolean", "ALLOW_RUNTIME_PERMISSIONS_SYSTEM", "false"
+    }
+    withUserRuntimePermissions {
+      dimension "runtimePermissions"
+      buildConfigField "boolean", "ALLOW_RUNTIME_PERMISSIONS_USER",   "true"
+      buildConfigField "boolean", "ALLOW_RUNTIME_PERMISSIONS_SYSTEM", "false"
+    }
+    withSystemRuntimePermissions {
+      dimension "runtimePermissions"
+      buildConfigField "boolean", "ALLOW_RUNTIME_PERMISSIONS_USER",   "true"
+      buildConfigField "boolean", "ALLOW_RUNTIME_PERMISSIONS_SYSTEM", "true"
+    }
+  }
+
+  buildTypes {
+    release {
+      debuggable      false
+      jniDebuggable   false
+      shrinkResources true
+      minifyEnabled   true
+      proguardFiles = [
+        "proguard-rules.txt",
+        getDefaultProguardFile('proguard-android.txt')
+      ]
+    }
+    debug {
+      debuggable      true
+      jniDebuggable   true
+      shrinkResources false
+      minifyEnabled   false
+    }
+  }
+
+  buildFeatures {
+    buildConfig true
+  }
+
+  dependenciesInfo {
+    includeInApk    = false  // Disables dependency metadata when building APKs.
+    includeInBundle = false  // Disables dependency metadata when building Android App Bundles.
+  }
+
+  lintOptions {
+    disable 'MissingTranslation'
+    abortOnError true
+  }
+}
+
+dependencies {
+  implementation project(':HiddenApiBypass')
+  implementation project(':PublicFileProvider')
+
+  implementation 'com.google.code.gson:gson:'    + project.ext.libVersionGson    // (235 KB) https://mvnrepository.com/artifact/com.google.code.gson/gson
+}
