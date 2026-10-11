@@ -1,0 +1,28 @@
+buildscript {
+  repositories {
+    maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    google()
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:8.7.2'    // https://mvnrepository.com/artifact/com.android.tools.build/gradle?repo=google
+                                                        // https://developer.android.com/build/releases/gradle-plugin#updating-gradle
+                                                        // https://developer.android.com/build/releases/gradle-plugin#api-level-support
+  }
+}
+
+allprojects {
+  repositories {
+    maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
+    maven { url 'https://maven.aliyun.com/repository/google' }
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    google()
+    mavenCentral()
+  }
+}
+
+task clean(type: Delete) {
+  delete rootProject.buildDir
+}
